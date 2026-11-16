@@ -1,0 +1,10 @@
+{
+  "version": "1.0.103",
+  "versionCode": 103,
+  "apkUrl": "https://github.com/jeanoperario0-sketch/neja-music/releases/download/v1.0.103/neja-music-1.0.103.apk",
+  "md5": "154fcf26593dd79791e9b33426f1d9ca",
+  "size": 56713806,
+  "notes": "Built from 787b5af: Fix release build: use preinstalled Android SDK (#4)",
+  "commit": "787b5af34ddba3fefdc5ec4b665c0a5bcca769d6",
+  "publishedAt": "2026-11-16T11:03:31.546Z"
+}

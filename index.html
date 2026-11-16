@@ -104,9 +104,7 @@
         a.removeAttribute('aria-disabled');
       } catch {
         v.textContent = 'First build in progress';
-        m.textContent = 'The Android app is being built. This page updates by itself when it is ready.';
-        document.getElementById('download-label').textContent = 'Not ready yet';
-        setTimeout(() => location.reload(), 60000);
+        m.textContent = 'Check back in a few minutes.';
       }
     })();
   </script>
