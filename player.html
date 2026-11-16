@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
+  <title>Neja Music player</title>
+  <style>
+    html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+    #p { position: absolute; inset: 0; width: 100%; height: 100%; }
+  </style>
+</head>
+<body>
+  <!--
+    Bridge between the Neja Music app and YouTube's official IFrame player.
+    Served from GitHub Pages so the embed has a real web origin and referrer,
+    which YouTube requires. The app sends commands via window.cmd(...) and
+    receives events through window.ReactNativeWebView.postMessage.
+  -->
+  <div id="p"></div>
+  <script>
+    var player = null;
+    var ready = false;
+    var timer = null;
+
+    function send(msg) {
+      var s = JSON.stringify(msg);
+      if (window.ReactNativeWebView) window.ReactNativeWebView.postMessage(s);
+      else if (window.parent !== window) window.parent.postMessage(s, '*');
+    }
+
+    function tick() {
+      if (!ready || !player || !player.getCurrentTime) return;
+      send({ type: 'time', current: player.getCurrentTime() || 0, duration: player.getDuration() || 0 });
+    }
+
+    window.onYouTubeIframeAPIReady = function () {
+      player = new YT.Player('p', {
+        width: '100%',
+        height: '100%',
+        playerVars: { playsinline: 1, rel: 0, controls: 1, fs: 0, iv_load_policy: 3, origin: location.origin },
+        events: {
+          onReady: function () {
+            ready = true;
+            send({ type: 'ready' });
+          },
+          onStateChange: function (e) {
+            send({ type: 'state', state: e.data });
+            if (e.data === 1) {
+              if (!timer) timer = setInterval(tick, 500);
+            } else {
+              tick();
+              if (timer) { clearInterval(timer); timer = null; }
+            }
+          },
+          onError: function (e) {
+            send({ type: 'error', code: e.data });
+          },
+        },
+      });
+    };
+
+    window.cmd = function (c) {
+      if (!ready || !player) return;
+      switch (c.type) {
+        case 'load':
+          var opts = { videoId: c.id, startSeconds: c.start || 0 };
+          if (c.autoplay) player.loadVideoById(opts);
+          else player.cueVideoById(opts);
+          break;
+        case 'play': player.playVideo(); break;
+        case 'pause': player.pauseVideo(); break;
+        case 'stop': player.stopVideo(); break;
+        case 'seek': player.seekTo(c.sec, true); tick(); break;
+        case 'volume': player.setVolume(Math.round(c.value)); break;
+      }
+    };
+
+    var tag = document.createElement('script');
+    tag.src = 'https://www.youtube.com/iframe_api';
+    document.head.appendChild(tag);
+  </script>
+</body>
+</html>
