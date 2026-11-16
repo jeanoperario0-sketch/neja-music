@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Encore — install</title>
+  <meta name="description" content="Install Encore, a personal music player for Android." />
+  <meta name="theme-color" content="#121212" />
+  <style>
+    :root {
+      --bg: #121212; --surface: #1e1e1e; --card: #282828; --line: #3e3e3e;
+      --accent: #1ed760; --ink: #06210f; --text: #fff; --muted: #b3b3b3; --faint: #7a7a7a;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--text);
+      font: 16px/1.5 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+    main { max-width: 560px; margin: 0 auto; padding: 48px 20px 64px; }
+    .mark {
+      width: 72px; height: 72px; border-radius: 18px; background: var(--accent);
+      display: grid; place-items: center; margin-bottom: 28px;
+    }
+    .mark svg { width: 40px; height: 40px; }
+    h1 { font-size: 44px; line-height: 1; letter-spacing: -1.5px; margin: 0 0 12px; font-weight: 800; }
+    .lede { color: var(--muted); margin: 0 0 32px; font-size: 17px; }
+    .tag {
+      font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase; color: var(--faint);
+    }
+    .release {
+      background: var(--surface); border-radius: 14px; padding: 20px; margin-bottom: 28px;
+    }
+    .release .row { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
+    .version { font-size: 22px; font-weight: 700; margin: 4px 0 2px; }
+    .meta { color: var(--muted); font-size: 14px; margin: 0; }
+    .download {
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+      margin-top: 18px; min-height: 52px; border-radius: 999px;
+      background: var(--accent); color: var(--ink); text-decoration: none;
+      font-weight: 800; font-size: 17px;
+    }
+    .download:focus-visible, a:focus-visible { outline: 3px solid var(--text); outline-offset: 3px; }
+    .download[aria-disabled="true"] { background: var(--card); color: var(--muted); pointer-events: none; }
+    ol { padding: 0; margin: 0 0 28px; list-style: none; counter-reset: s; }
+    ol li {
+      counter-increment: s; position: relative; padding: 14px 0 14px 44px; border-top: 1px solid var(--line);
+    }
+    ol li::before {
+      content: counter(s); position: absolute; left: 0; top: 14px; width: 28px; height: 28px; border-radius: 50%;
+      background: var(--card); display: grid; place-items: center; font-weight: 700; font-size: 14px;
+    }
+    ol li b { display: block; }
+    ol li span { color: var(--muted); font-size: 15px; }
+    h2 { font-size: 18px; margin: 0 0 12px; }
+    .note { color: var(--muted); font-size: 14px; }
+    a { color: var(--text); }
+    footer { margin-top: 40px; color: var(--faint); font-size: 13px; }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="mark" aria-hidden="true">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#06210f" stroke-width="2.4" stroke-linecap="round">
+        <path d="M5 9v6M9.5 6v12M14 9v6M18.5 7v10" />
+      </svg>
+    </div>
+    <h1>Encore</h1>
+    <p class="lede">Your personal music player for Android. Streams only what each source allows, keeps your music offline, plays your own files.</p>
+
+    <section class="release" aria-live="polite">
+      <div class="tag">Latest version</div>
+      <div class="row">
+        <p class="version" id="version">Checking…</p>
+      </div>
+      <p class="meta" id="meta">&nbsp;</p>
+      <a class="download" id="download" href="https://github.com/jeanoperario0-sketch/encore-app/releases/latest" aria-disabled="true">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>
+        <span id="download-label">Download for Android</span>
+      </a>
+    </section>
+
+    <h2>Install it</h2>
+    <ol>
+      <li><b>Open this page on your Android phone</b><span>and tap Download for Android.</span></li>
+      <li><b>Open the downloaded file</b><span>If Android asks, allow your browser to install unknown apps.</span></li>
+      <li><b>Tap Install</b><span>Then open Encore.</span></li>
+    </ol>
+
+    <h2>Updates</h2>
+    <p class="note">Encore checks this page for new versions. On Wi-Fi it downloads them by itself and shows <i>Update ready</i>; tap Install and Android updates the app in place. Your playlists, likes and downloads stay.</p>
+
+    <footer>
+      <a href="https://github.com/jeanoperario0-sketch/encore-app/releases">All versions</a>
+    </footer>
+  </main>
+  <script>
+    (async () => {
+      const v = document.getElementById('version');
+      const m = document.getElementById('meta');
+      const a = document.getElementById('download');
+      try {
+        const r = await fetch('version.json?t=' + Date.now(), { cache: 'no-store' });
+        if (!r.ok) throw new Error(String(r.status));
+        const f = await r.json();
+        if (!f.apkUrl) throw new Error('no build yet');
+        v.textContent = 'Version ' + f.version;
+        const mb = f.size ? (f.size / 1048576).toFixed(0) + ' MB · ' : '';
+        const when = f.publishedAt ? new Date(f.publishedAt).toLocaleDateString(undefined, { dateStyle: 'medium' }) : '';
+        m.textContent = mb + when;
+        a.href = f.apkUrl;
+        a.removeAttribute('aria-disabled');
+      } catch {
+        v.textContent = 'First build in progress';
+        m.textContent = 'Check back in a few minutes.';
+      }
+    })();
+  </script>
+</body>
+</html>
