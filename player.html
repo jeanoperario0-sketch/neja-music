@@ -26,12 +26,14 @@
     function send(msg) {
       var s = JSON.stringify(msg);
       if (window.ReactNativeWebView) window.ReactNativeWebView.postMessage(s);
-      else if (window.parent !== window) window.parent.postMessage(s, '*');
+      else if (window.parent !== window) window.parent.postMessage(s, location.origin);
     }
 
     function tick() {
       if (!ready || !player || !player.getCurrentTime) return;
-      send({ type: 'time', current: player.getCurrentTime() || 0, duration: player.getDuration() || 0 });
+      var current = Number(player.getCurrentTime()) || 0;
+      var duration = Number(player.getDuration()) || 0;
+      if (isFinite(current) && isFinite(duration)) send({ type: 'time', current: current, duration: duration });
     }
 
     window.onYouTubeIframeAPIReady = function () {
@@ -45,8 +47,10 @@
             send({ type: 'ready' });
           },
           onStateChange: function (e) {
-            send({ type: 'state', state: e.data });
-            if (e.data === 1) {
+            var state = Number(e.data);
+            if (!isFinite(state)) return;
+            send({ type: 'state', state: state });
+            if (state === 1) {
               if (!timer) timer = setInterval(tick, 500);
             } else {
               tick();
@@ -54,25 +58,33 @@
             }
           },
           onError: function (e) {
-            send({ type: 'error', code: e.data });
+            var code = Number(e.data);
+            if (isFinite(code)) send({ type: 'error', code: code });
           },
         },
       });
     };
 
     window.cmd = function (c) {
-      if (!ready || !player) return;
+      if (!ready || !player || !c || typeof c !== 'object') return;
       switch (c.type) {
         case 'load':
-          var opts = { videoId: c.id, startSeconds: c.start || 0 };
-          if (c.autoplay) player.loadVideoById(opts);
+          if (typeof c.id !== 'string' || !/^[A-Za-z0-9_-]{11}$/.test(c.id)) return;
+          var opts = { videoId: c.id, startSeconds: Number(c.start) || 0 };
+          if (c.autoplay === true) player.loadVideoById(opts);
           else player.cueVideoById(opts);
           break;
         case 'play': player.playVideo(); break;
         case 'pause': player.pauseVideo(); break;
         case 'stop': player.stopVideo(); break;
-        case 'seek': player.seekTo(c.sec, true); tick(); break;
-        case 'volume': player.setVolume(Math.round(c.value)); break;
+        case 'seek':
+          var sec = Number(c.sec);
+          if (isFinite(sec) && sec >= 0) { player.seekTo(sec, true); tick(); }
+          break;
+        case 'volume':
+          var value = Number(c.value);
+          if (isFinite(value)) player.setVolume(Math.max(0, Math.min(100, Math.round(value))));
+          break;
       }
     };
 

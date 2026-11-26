@@ -1,10 +1,10 @@
 {
-  "version": "1.0.104",
-  "versionCode": 104,
-  "apkUrl": "https://github.com/jeanoperario0-sketch/neja-music/releases/download/v1.0.104/neja-music-1.0.104.apk",
-  "md5": "748f01d5628f4756ab9b0cbb51924e87",
-  "size": 56713806,
-  "notes": "Built from b97206d: Install page: explain the disabled button before the first build (#5)",
-  "commit": "b97206d278dc6af30c6fe4a893e41b0013f9e0af",
-  "publishedAt": "2026-11-16T11:41:06.359Z"
+  "version": "1.0.105",
+  "versionCode": 105,
+  "apkUrl": "https://github.com/jeanoperario0-sketch/neja-music/releases/download/v1.0.105/neja-music-1.0.105.apk",
+  "md5": "3427d293481c3aaf6c1ef2f964e337d9",
+  "size": 57079511,
+  "notes": "Built from c4c36fd: fix: pass provider keys to release builds",
+  "commit": "c4c36fdc8f7371f9b7290c3c2fdc1b4c04f0af71",
+  "publishedAt": "2026-11-26T09:41:06.354Z"
 }
