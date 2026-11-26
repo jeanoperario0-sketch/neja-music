@@ -1,10 +1,10 @@
 {
-  "version": "1.0.106",
-  "versionCode": 106,
-  "apkUrl": "https://github.com/jeanoperario0-sketch/neja-music/releases/download/v1.0.106/neja-music-1.0.106.apk",
-  "md5": "0c862a87571ea764dc2b6db1dffbdb04",
-  "size": 57083595,
-  "notes": "Built from 44dca19: fix: harden automatic app updates",
-  "commit": "44dca1947185993c87a48f883a4f647a2c46c97f",
-  "publishedAt": "2026-11-26T10:13:46.313Z"
+  "version": "1.0.107",
+  "versionCode": 107,
+  "apkUrl": "https://github.com/jeanoperario0-sketch/neja-music/releases/download/v1.0.107/neja-music-1.0.107.apk",
+  "md5": "722285495dcc02c19a38dac39ad69f68",
+  "size": 57072827,
+  "notes": "Built from 56e3ff0: feat: switch to YouTube with Brave handoff",
+  "commit": "56e3ff0f469a23abe24c8fb0d5316e874f5111d7",
+  "publishedAt": "2026-11-26T11:16:52.715Z"
 }
